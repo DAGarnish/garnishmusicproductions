@@ -140,7 +140,7 @@ export default async function ProductDetailPage({ params }: Props) {
               <div className="lg:col-span-2 space-y-8">
                 <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-slate-100/80">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-6" style={{ color: site.accentColor, backgroundColor: `${site.accentColor}10` }}>
-                    Garnish {site.city} &bull; Payload CMS Course
+                    Garnish {site.city}
                   </span>
                   <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight font-display mb-6">
                     {course.title}

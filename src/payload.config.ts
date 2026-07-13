@@ -17,7 +17,9 @@ const __dirname = path.dirname(__filename);
 
 // Use Postgres adapter if DATABASE_URI or DATABASE_URL starts with postgres:// or postgresql://,
 // otherwise default to SQLite for zero-config local development and testing.
-const dbUri = process.env.DATABASE_URI || process.env.DATABASE_URL || '';
+const rawDbUri = process.env.DATABASE_URI || process.env.DATABASE_URL || '';
+// Automatically upgrade 'sslmode=require' to 'sslmode=verify-full' to prevent libpq / pg security warnings
+const dbUri = rawDbUri.replace('sslmode=require', 'sslmode=verify-full');
 const isPostgres = dbUri.startsWith('postgres://') || dbUri.startsWith('postgresql://');
 
 export default buildConfig({

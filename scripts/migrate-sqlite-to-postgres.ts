@@ -6,7 +6,8 @@ import path from 'path';
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
 const DB_PATH = path.resolve(process.cwd(), 'garnish-local.db');
-const PG_URL: string = process.env.DATABASE_URL || process.env.DATABASE_URI || '';
+const rawPgUrl: string = process.env.DATABASE_URL || process.env.DATABASE_URI || '';
+const PG_URL: string = rawPgUrl.replace('sslmode=require', 'sslmode=verify-full');
 
 if (!PG_URL) {
   console.error('ERROR: DATABASE_URL not found in .env.local');

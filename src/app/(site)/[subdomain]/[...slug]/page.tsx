@@ -297,7 +297,7 @@ export default async function DynamicSubdomainPage({ params }: Props) {
               className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-6"
               style={{ color: site.accentColor, backgroundColor: `${site.accentColor}10` }}
             >
-              Garnish {site.city} &bull; Payload CMS
+              Garnish {site.city}
             </span>
             <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight font-display mb-8">
               {payloadPage.title}
