@@ -16,6 +16,10 @@ export interface SiteConfig {
   email?: string;
 }
 
+// Direct Cloudinary URLs for all campus hero images (sourced from garnish-media folder)
+// These are the actual uploaded CDN URLs — no local file dependency
+const _CDN = 'https://res.cloudinary.com/s7pus8t5/image/upload';
+
 export const SITES: Record<string, SiteConfig> = {
   www: {
     blogId: 1,
@@ -23,10 +27,10 @@ export const SITES: Record<string, SiteConfig> = {
     name: 'Garnish Music Production School',
     city: 'London',
     tagline: "The World's Boutique Music Production School",
-    accentColor: '#c0392b',        // Deep Red (matching live WP site)
+    accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-www.jpg',
+    heroImage: `${_CDN}/v1783689930/garnish-media/studio-hero-www.webp`,
   },
   la: {
     blogId: 7,
@@ -37,7 +41,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-la.jpg',
+    heroImage: `${_CDN}/v1783689926/garnish-media/studio-hero-la.jpg`,
     address: '7600 Melrose Avenue, Los Angeles, California, 90046, USA',
   },
   ny: {
@@ -49,7 +53,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-ny.jpg',
+    heroImage: `${_CDN}/v1783689926/garnish-media/studio-hero-ny.jpg`,
   },
   nsh: {
     blogId: 2,
@@ -60,7 +64,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-nsh.jpg',
+    heroImage: `${_CDN}/v1783689926/garnish-media/studio-hero-nsh.jpg`,
   },
   ber: {
     blogId: 3,
@@ -71,7 +75,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-ber.jpg',
+    heroImage: `${_CDN}/v1783689924/garnish-media/studio-hero-ber.jpg`,
   },
   hk: {
     blogId: 4,
@@ -82,7 +86,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-hk.jpg',
+    heroImage: `${_CDN}/v1783689924/garnish-media/studio-hero-hk.jpg`,
   },
   mia: {
     blogId: 5,
@@ -93,7 +97,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-mia.jpg',
+    heroImage: `${_CDN}/v1783689926/garnish-media/studio-hero-mia.jpg`,
   },
   edu: {
     blogId: 8,
@@ -104,7 +108,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-edu.jpg',
+    heroImage: `${_CDN}/v1783689387/garnish-media/studio-hero-edu.jpg`,
   },
   tyo: {
     blogId: 18,
@@ -115,7 +119,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-tyo.jpg',
+    heroImage: `${_CDN}/v1783689928/garnish-media/studio-hero-tyo.jpg`,
   },
   sea: {
     blogId: 21,
@@ -126,7 +130,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-sea.jpg',
+    heroImage: `${_CDN}/v1783689928/garnish-media/studio-hero-sea.jpg`,
   },
   bcn: {
     blogId: 30,
@@ -137,7 +141,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-bcn.jpg',
+    heroImage: `${_CDN}/v1783689924/garnish-media/studio-hero-bcn.jpg`,
   },
   hou: {
     blogId: 33,
@@ -148,7 +152,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-hou.jpg',
+    heroImage: `${_CDN}/v1783689924/garnish-media/studio-hero-hou.jpg`,
   },
   syd: {
     blogId: 35,
@@ -159,7 +163,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-syd.jpg',
+    heroImage: `${_CDN}/v1783689928/garnish-media/studio-hero-syd.jpg`,
   },
   av: {
     blogId: 46,
@@ -170,7 +174,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-av.jpg',
+    heroImage: `${_CDN}/v1783689923/garnish-media/studio-hero-av.webp`,
   },
   lis: {
     blogId: 48,
@@ -181,7 +185,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-lis.jpg',
+    heroImage: `${_CDN}/v1783689925/garnish-media/studio-hero-lis.jpg`,
   },
   sf: {
     blogId: 51,
@@ -192,7 +196,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-sf.jpg',
+    heroImage: `${_CDN}/v1783689928/garnish-media/studio-hero-sf.jpg`,
   },
   sg: {
     blogId: 54,
@@ -203,7 +207,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-sg.jpg',
+    heroImage: `${_CDN}/v1783689928/garnish-media/studio-hero-sg.jpg`,
   },
   pdx: {
     blogId: 55,
@@ -214,7 +218,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-pdx.jpg',
+    heroImage: `${_CDN}/v1783689927/garnish-media/studio-hero-pdx.jpg`,
   },
   mrb: {
     blogId: 56,
@@ -225,7 +229,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-mrb.jpg',
+    heroImage: `${_CDN}/v1783689926/garnish-media/studio-hero-mrb.jpg`,
   },
   bh: {
     blogId: 57,
@@ -236,7 +240,7 @@ export const SITES: Record<string, SiteConfig> = {
     accentColor: '#c0392b',
     accentColorHover: '#a93226',
     heroGradient: 'from-slate-950 via-slate-900 to-slate-950',
-    heroImage: '/media/studio-hero-bh.jpg',
+    heroImage: `${_CDN}/v1783689924/garnish-media/studio-hero-bh.jpg`,
   },
 };
 

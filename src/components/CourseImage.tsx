@@ -14,7 +14,8 @@ interface CourseImageProps {
 export function CourseImage({ src, alt, className = 'object-cover', sizes = '(max-w-768px) 100vw, 800px' }: CourseImageProps) {
   const resolved = resolveImageUrl(src) || src;
   const [imgSrc, setImgSrc] = useState(resolved);
-  const fallbackSrc = '/studio-hero.png';
+  // Cloudinary fallback — guaranteed to load even if the primary image 404s
+  const fallbackSrc = 'https://res.cloudinary.com/s7pus8t5/image/upload/garnish-media/studio-hero-www.webp';
 
   useEffect(() => {
     setImgSrc(resolveImageUrl(src) || src);
@@ -35,3 +36,4 @@ export function CourseImage({ src, alt, className = 'object-cover', sizes = '(ma
     />
   );
 }
+

@@ -3,6 +3,7 @@ import { withPayload } from "@payloadcms/next/withPayload";
 import { getNextConfigRedirects } from "./src/lib/redirects";
 
 const nextConfig: NextConfig = {
+  trailingSlash: true,
   async redirects() {
     return getNextConfigRedirects();
   },

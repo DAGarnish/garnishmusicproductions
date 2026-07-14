@@ -11,6 +11,8 @@
     "generate:importmap": "payload generate:importmap",
     "generate:types": "payload generate:types",
     "migrate:wp": "tsx scripts/migrate-wp-to-payload.ts",
+    "fix:course-images": "node scripts/fix-course-images.cjs",
+    "upload:cloudinary": "tsx scripts/upload-to-cloudinary.ts",
     "postinstall": "node scripts/patch-payload-hydration.cjs"
   },
   "dependencies": {

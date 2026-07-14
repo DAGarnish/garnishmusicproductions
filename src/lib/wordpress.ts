@@ -71,7 +71,17 @@ export function resolveImageUrl(urlOrPath: string | undefined | null): string | 
 
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD_NAME || 's7pus8t5';
 
-  // If it points to local /media/ or /studio-hero, route directly from Cloudinary
+  // Already a full Cloudinary URL — pass through unchanged (handles garnish-media and garnish-uploads DB URLs)
+  if (urlOrPath.startsWith('https://res.cloudinary.com/')) {
+    return urlOrPath;
+  }
+
+  // Any other full http/https URL — pass through as-is
+  if (urlOrPath.startsWith('http://') || urlOrPath.startsWith('https://')) {
+    return urlOrPath;
+  }
+
+  // Local /media/ folder or /studio-hero paths → garnish-media (campus hero images)
   if (urlOrPath.startsWith('/media/')) {
     const filename = urlOrPath.replace(/^\/media\//, '');
     return `https://res.cloudinary.com/${cloudName}/image/upload/garnish-media/${filename}`;
@@ -81,18 +91,24 @@ export function resolveImageUrl(urlOrPath: string | undefined | null): string | 
     return `https://res.cloudinary.com/${cloudName}/image/upload/garnish-media/${filename}`;
   }
 
-  // If it points to /uploads/ or wp-content/uploads, route to Cloudinary garnish-uploads
+  // local-hero/ db wp_upload_path pattern → garnish-media
+  if (urlOrPath.startsWith('local-hero/')) {
+    const filename = urlOrPath.replace('local-hero/', '');
+    return `https://res.cloudinary.com/${cloudName}/image/upload/garnish-media/${filename}`;
+  }
+
+  // WordPress /uploads/ paths → garnish-uploads (user's Cloudinary upload folder)
   if (urlOrPath.startsWith('/uploads/')) {
     const relativePath = urlOrPath.replace(/^\/uploads\//, '');
     return `https://res.cloudinary.com/${cloudName}/image/upload/garnish-uploads/${relativePath}`;
   }
 
-  // If it's a relative wpUploadPath (e.g., '2018/03/foo.jpg' or 'sites/2/2019/01/bar.png')
+  // Raw wpUploadPath patterns (e.g., '2018/03/foo.jpg' or 'sites/2/2019/01/bar.png') → garnish-uploads
   if (/^(sites\/\d+\/)?\d{4}\/\d{2}\//.test(urlOrPath)) {
     return `https://res.cloudinary.com/${cloudName}/image/upload/garnish-uploads/${urlOrPath.replace(/^\//, '')}`;
   }
 
-  // If it contains /wp-content/uploads/ from any domain or relative path
+  // Full wp-content/uploads URL from any domain → garnish-uploads
   const wpMatch = urlOrPath.match(/[\/a-zA-Z0-9.:_-]*\/wp-content\/uploads\/(.+)/i);
   if (wpMatch && wpMatch[1]) {
     return `https://res.cloudinary.com/${cloudName}/image/upload/garnish-uploads/${wpMatch[1].split('?')[0]}`;
@@ -100,6 +116,7 @@ export function resolveImageUrl(urlOrPath: string | undefined | null): string | 
 
   return urlOrPath;
 }
+
 
 // Utility to resolve featured image source URL from embedded data
 export function getFeaturedImage(post: WordPressPost, size: string = 'full'): { url: string; alt: string } | null {

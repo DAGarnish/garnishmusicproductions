@@ -119,6 +119,12 @@ async function runMigration() {
       const validCols = tableInfo.map((col: any) => col.name);
       const colListSql = validCols.map((c) => `"${c}"`).join(', ');
 
+      const hasId = validCols.includes('id');
+      const updateCols = validCols.filter((c) => c !== 'id' && c !== 'created_at');
+      const onConflictClause = hasId && updateCols.length > 0
+        ? `ON CONFLICT ("id") DO UPDATE SET ${updateCols.map((c) => `"${c}" = EXCLUDED."${c}"`).join(', ')}`
+        : 'ON CONFLICT DO NOTHING';
+
       // Insert in chunks of 50 rows per query for extreme speed
       const CHUNK_SIZE = 50;
       let insertedForTable = 0;
@@ -142,7 +148,7 @@ async function runMigration() {
           valuePlaceholders.push(`(${rowPlaceholders.join(', ')})`);
         });
 
-        const batchInsertQuery = `INSERT INTO "${tableName}" (${colListSql}) VALUES ${valuePlaceholders.join(', ')} ON CONFLICT DO NOTHING`;
+        const batchInsertQuery = `INSERT INTO "${tableName}" (${colListSql}) VALUES ${valuePlaceholders.join(', ')} ${onConflictClause}`;
         try {
           const res = await pgClient.query(batchInsertQuery, flatValues);
           insertedForTable += res.rowCount || chunk.length;
@@ -151,7 +157,7 @@ async function runMigration() {
           // Fallback to row-by-row insert for this chunk if batch insert fails on type issues
           for (const row of chunk) {
             const singlePlaceholders = validCols.map((_, idx) => `$${idx + 1}`).join(', ');
-            const singleQuery = `INSERT INTO "${tableName}" (${colListSql}) VALUES (${singlePlaceholders}) ON CONFLICT DO NOTHING`;
+            const singleQuery = `INSERT INTO "${tableName}" (${colListSql}) VALUES (${singlePlaceholders}) ${onConflictClause}`;
             const singleVals = validCols.map((col) => {
               let val = row[col];
               if (val === '' && (col.endsWith('_id') || col === 'id' || col.includes('order'))) {

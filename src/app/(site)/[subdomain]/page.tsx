@@ -149,7 +149,10 @@ export default async function SubdomainPage({ params }: SubdomainPageProps) {
   ]);
 
   const hasProducts = products && products.length > 0;
-  const resolvedHeroImage = resolveImageUrl(site.heroImage || '/studio-hero.png') || '/studio-hero.png';
+  // heroImage is already a full Cloudinary URL from sites.ts — use it directly
+  const resolvedHeroImage = site.heroImage?.startsWith('http')
+    ? site.heroImage
+    : (resolveImageUrl(site.heroImage || '') || 'https://res.cloudinary.com/s7pus8t5/image/upload/v1783689930/garnish-media/studio-hero-www.webp');
 
   return (
     <div className="font-sans bg-white">

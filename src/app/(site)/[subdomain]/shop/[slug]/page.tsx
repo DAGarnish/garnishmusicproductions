@@ -7,13 +7,40 @@ import type { Metadata } from 'next';
 import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
 import { CourseImage } from '@/components/CourseImage';
+import { parseWPBakery } from '@/lib/wpbakery';
 
 const LEGACY_SLUG_MAP: Record<string, string> = {
+  // London-specific suffixed slugs → canonical DB slugs
   'school-summer-camp': 'summer-camp',
   'ableton-live-course-london': 'ableton-production',
   'logic-pro-x-course-london': 'logic-course',
   'songwriting-course-london': 'songwriting-course',
-  'mixing-and-mastering-course-london': 'mixing-mastering',
+  'mixing-and-mastering-course-london': 'mixing-mastering-course',
+  // Short express course slugs from Header nav → DB slugs
+  'fl-studio': 'electronic-music-dj-course',           // closest match in DB
+  'mastering': 'mixing-mastering-course',               // mixing-mastering-course is in DB
+  'mixing': 'mixing-mastering-course',
+  'ableton-live-for-djs': 'electronic-music-dj-course',
+  'sound-design': 'sounds-design-synthesis',
+  'rekordbox': 'electronic-music-dj-course',
+  'arturia': 'electronic-sound-art',
+  'rhythm-section-programming': 'rhythm-section-pro',
+  'radio-podcast': 'composition',
+  'dj-course': 'electronic-music-dj-course',
+  'post-production': 'electronic-music-production',
+  'k-pop': 'songwriting-course',
+  'bespoke-private-tuition': 'private-tuition',
+  'private-lessons': 'private-tuition',
+  // Academy / Program slugs
+  'electronic-music-production': 'ableton-producer-program',
+  'pop-producer-program': 'pop-music-production-course',
+  // Alternate spellings across tenants
+  'ableton-live': 'ableton-production',
+  'logic-pro': 'logic-course',
+  'logic-pro-x': 'logic-course',
+  'mixing-mastering': 'mixing-mastering-course',
+  'songwriting': 'songwriting-course',
+  'vocal': 'vocal-production',
 };
 
 interface Props {
@@ -59,7 +86,8 @@ const getTopicFallbackImage = (slugStr: string, titleStr?: string): string => {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { subdomain, slug } = await params;
-  const targetSlug = LEGACY_SLUG_MAP[slug] || slug;
+  const cleanSlug = typeof slug === 'string' ? slug.replace(/\/$/, '') : slug;
+  const targetSlug = LEGACY_SLUG_MAP[cleanSlug] || cleanSlug;
   const site = SITES[subdomain] || SITES.www;
 
   try {
@@ -83,6 +111,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           ],
         },
       });
+    }
+    if (result.docs[0] && (!result.docs[0].description || result.docs[0].description.length < 200)) {
+      const allMatches = await payload.find({
+        collection: 'courses',
+        where: { slug: { equals: targetSlug } },
+        limit: 20,
+      });
+      const bestMatch = allMatches.docs.find(d => d.description && d.description.length >= 200);
+      if (bestMatch && bestMatch.description) {
+        result.docs[0].description = bestMatch.description;
+        if (!result.docs[0].shortDescription && bestMatch.shortDescription) {
+          result.docs[0].shortDescription = bestMatch.shortDescription;
+        }
+      }
     }
     if (result.docs[0]) {
       const c = result.docs[0];
@@ -116,7 +158,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { subdomain, slug } = await params;
-  const targetSlug = LEGACY_SLUG_MAP[slug] || slug;
+  const cleanSlug = typeof slug === 'string' ? slug.replace(/\/$/, '') : slug;
+  const targetSlug = LEGACY_SLUG_MAP[cleanSlug] || cleanSlug;
   const site = SITES[subdomain] || SITES.www;
 
   // 1. First: Check if this course/product exists in Payload CMS v3 ('courses' collection)
@@ -142,6 +185,21 @@ export default async function ProductDetailPage({ params }: Props) {
           ],
         },
       });
+    }
+
+    if (result.docs[0] && (!result.docs[0].description || result.docs[0].description.length < 200)) {
+      const allMatches = await payload.find({
+        collection: 'courses',
+        where: { slug: { equals: targetSlug } },
+        limit: 20,
+      });
+      const bestMatch = allMatches.docs.find(d => d.description && d.description.length >= 200);
+      if (bestMatch && bestMatch.description) {
+        result.docs[0].description = bestMatch.description;
+        if (!result.docs[0].shortDescription && bestMatch.shortDescription) {
+          result.docs[0].shortDescription = bestMatch.shortDescription;
+        }
+      }
     }
 
     if (result.docs[0]) {
@@ -193,7 +251,7 @@ export default async function ProductDetailPage({ params }: Props) {
                   {course.shortDescription && (
                     <div 
                       className="text-base sm:text-lg text-slate-600 leading-relaxed mb-6 wp-short-description"
-                      dangerouslySetInnerHTML={{ __html: course.shortDescription }}
+                      dangerouslySetInnerHTML={{ __html: parseWPBakery(course.shortDescription, site.accentColor) }}
                     />
                   )}
 
@@ -201,7 +259,7 @@ export default async function ProductDetailPage({ params }: Props) {
                   <div 
                     className="wp-content prose prose-slate max-w-none text-slate-700 leading-relaxed"
                     style={{ '--accent': site.accentColor } as React.CSSProperties}
-                    dangerouslySetInnerHTML={{ __html: (course.description || 'Full academy syllabus, mixing assignments, hands-on workstation setup, and 1-on-1 mentorship.').replace(/https?:\/\/[^\/]+\/wp-content\/uploads\//gi, 'https://www.garnishmusicproduction.com/wp-content/uploads/').replace(/src=["']\/uploads\//gi, 'src="https://www.garnishmusicproduction.com/wp-content/uploads/') }}
+                    dangerouslySetInnerHTML={{ __html: parseWPBakery(course.description || 'Full academy syllabus, mixing assignments, hands-on workstation setup, and 1-on-1 mentorship.', site.accentColor) }}
                   />
                 </div>
               </div>
