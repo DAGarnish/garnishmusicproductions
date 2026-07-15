@@ -413,12 +413,28 @@ export default async function ProductDetailPage({ params }: Props) {
       const course = result.docs[0];
       const courseDuration = course.duration || '360 Hours (Certificate)';
       const coursePrice = course.price || '$1,495';
+      // On the live garnishmusicproduction.com (www/London), ALL short express
+      // courses are currently offered via private tuition only — no pricing sidebar.
+      // Any course that previously ended in '-london' or is a short express course
+      // for the www tenant should use the single-column private tuition layout.
+      const SHORT_COURSE_SLUGS_NO_SIDEBAR = new Set([
+        'ableton-live-course-london', 'logic-pro-x-course-london', 'logic-course',
+        'songwriting-course-london', 'songwriting-course',
+        'mixing-and-mastering-course-london', 'mixing-mastering-course',
+        'ableton-live-for-djs', 'sound-design', 'sounds-design-synthesis',
+        'rekordbox', 'arturia', 'electronic-sound-art',
+        'rhythm-section-programming', 'rhythm-section-pro',
+        'radio-podcast', 'composition', 'vocal-production',
+        'fl-studio', 'mastering', 'mixing', 'dj-course', 'electronic-music-dj-course',
+        'post-production', 'k-pop', 'private-tuition',
+        'school-summer-camp', 'summer-camp',
+      ]);
       const isPrivateTuitionCourse =
-        course.slug === 'ableton-live-course-london' ||
-        targetSlug === 'ableton-live-course-london' ||
+        subdomain === 'www' ||
+        SHORT_COURSE_SLUGS_NO_SIDEBAR.has(course.slug || '') ||
+        SHORT_COURSE_SLUGS_NO_SIDEBAR.has(targetSlug) ||
         course.slug?.endsWith('-london') ||
-        targetSlug.endsWith('-london') ||
-        course.slug === 'private-tuition';
+        targetSlug.endsWith('-london');
 
       return (
         <main className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 bg-slate-50">

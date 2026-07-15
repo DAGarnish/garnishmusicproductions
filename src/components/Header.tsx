@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getLocalLink, type SiteConfig } from '@/lib/sites';
 
 interface HeaderProps {
@@ -11,27 +12,20 @@ interface HeaderProps {
 
 // Exact navigation structure from live WordPress site
 const ABOUT_ITEMS = {
+  // Locations shown exactly as on live garnishmusicproduction.com
   locations: [
     { label: 'World Home', href: 'https://edu.garnishmusicproduction.com/', code: 'edu' },
-    { label: 'LDN', href: 'https://www.garnishmusicproduction.com/', code: 'www' },
-    { label: 'LA', href: 'https://la.garnishmusicproduction.com/', code: 'la' },
-    { label: 'NY', href: 'https://ny.garnishmusicproduction.com/', code: 'ny' },
-    { label: 'NSH', href: 'https://nsh.garnishmusicproduction.com/', code: 'nsh' },
-    { label: 'BER', href: 'https://ber.garnishmusicproduction.com/', code: 'ber' },
-    { label: 'HK', href: 'https://hk.garnishmusicproduction.com', code: 'hk' },
-    { label: 'MIA', href: 'https://mia.garnishmusicproduction.com/', code: 'mia' },
-    { label: 'TYO', href: 'https://tyo.garnishmusicproduction.com/', code: 'tyo' },
-    { label: 'SEA', href: 'https://sea.garnishmusicproduction.com/', code: 'sea' },
     { label: 'BCN', href: 'https://bcn.garnishmusicproduction.com/', code: 'bcn' },
-    { label: 'HOU', href: 'https://hou.garnishmusicproduction.com/', code: 'hou' },
-    { label: 'SYD', href: 'https://syd.garnishmusicproduction.com/', code: 'syd' },
-    { label: 'AV', href: 'https://av.garnishmusicproduction.com/', code: 'av' },
+    { label: 'BER', href: 'https://ber.garnishmusicproduction.com/', code: 'ber' },
+    { label: 'LDN', href: 'https://www.garnishmusicproduction.com/', code: 'www' },
     { label: 'LIS', href: 'https://lis.garnishmusicproduction.com/', code: 'lis' },
+    { label: 'HK', href: 'https://hk.garnishmusicproduction.com', code: 'hk' },
+    { label: 'TYO', href: 'https://tyo.garnishmusicproduction.com/', code: 'tyo' },
+    { label: 'LA', href: 'https://la.garnishmusicproduction.com/', code: 'la' },
+    { label: 'MIA', href: 'https://mia.garnishmusicproduction.com/', code: 'mia' },
+    { label: 'NSH', href: 'https://nsh.garnishmusicproduction.com/', code: 'nsh' },
+    { label: 'SEA', href: 'https://sea.garnishmusicproduction.com/', code: 'sea' },
     { label: 'SF', href: 'https://sf.garnishmusicproduction.com/', code: 'sf' },
-    { label: 'SG', href: 'https://sg.garnishmusicproduction.com/', code: 'sg' },
-    { label: 'PDX', href: 'https://pdx.garnishmusicproduction.com/', code: 'pdx' },
-    { label: 'MRB', href: 'https://mrb.garnishmusicproduction.com/', code: 'mrb' },
-    { label: 'BH', href: 'https://bh.garnishmusicproduction.com/', code: 'bh' },
   ],
 };
 
@@ -127,11 +121,8 @@ const getAboutItems = (subdomain?: string) => {
       { label: 'Home', href: '/' },
       { label: 'Tutors', href: '/instructors/' },
       { label: 'Dave Garnish', href: 'https://edu.garnishmusicproduction.com/music/dave-garnish/' },
-      { label: 'Open House', href: '/open-house/' },
-      { label: 'Private Tuition', href: '/bespoke-private-tuition/' },
       { label: 'Terms', href: '/terms/' },
       { label: 'Privacy Policy', href: '/privacy-policy/' },
-      { label: 'Contact', href: '/contact/' },
     ];
   }
   return [
@@ -391,51 +382,44 @@ const getCoursesItems = (subdomain?: string): Record<string, CourseCategory> => 
     };
   }
 
-  // Worldwide / London default
+  // Worldwide / London default — exactly matches live garnishmusicproduction.com
   return {
     accredited: {
-      heading: 'Accredited & Diplomas',
+      heading: 'Accredited',
       items: [
         { label: 'F1 USA Visa Eligible (LA)', href: 'https://la.garnishmusicproduction.com/undergraduate-business-and-music/' },
         { label: 'BA (Hons) Pathways (BCN)', href: '/ba-pathway-courses/' },
       ],
     },
-    comprehensive: {
-      heading: 'Comprehensive Programs',
+    certified: {
+      heading: 'Certified',
       items: [
-        { label: '360° Garnish Music Academy', href: '/academy/electronic-music-production/' },
-        { label: 'Electronic Music Producer Program', href: '/programs/ableton-producer-program/' },
-        { label: 'Pop Music Producer Program', href: '/programs/pop-producer-program/' },
+        { label: 'Garnish Industry Diploma', href: '/academy/electronic-music-production/' },
+        { label: 'Electronic Music Producer', href: '/programs/ableton-producer-program/' },
+        { label: 'International Academy', href: 'https://edu.garnishmusicproduction.com/international-academy/' },
       ],
     },
-    express: {
-      heading: 'Express Classes',
+    shorter: {
+      heading: 'Shorter Tactical',
       items: [
         { label: 'Ableton Live', href: '/courses/ableton-live-course-london/' },
+        { label: 'Hit Songwriting', href: '/courses/songwriting-course-london/' },
         { label: 'Logic Pro', href: '/courses/logic-pro-x-course-london/' },
-        { label: 'Logic Pro Self Paced', href: 'https://www.musicgurus.com/learn/garnish-music-production-online-courses/' },
-        { label: 'FL Studio', href: '/courses/fl-studio/' },
-        { label: 'Pro Tools', href: '/courses/pro-tools/' },
-        { label: 'Mixing/Mixdown', href: '/courses/mixing-and-mastering-course-london/' },
-        { label: 'Mastering', href: '/courses/mastering/' },
-        { label: 'Hit Songwriting Course', href: '/courses/songwriting-course-london/' },
-        { label: 'Vocal Production', href: '/courses/vocal-production/' },
+        { label: 'Logic Self-Paced Online', href: 'https://www.musicgurus.com/learn/garnish-music-production-online-courses/' },
+        { label: 'Mixing & Mastering', href: '/courses/mixing-and-mastering-course-london/' },
         { label: 'Composition', href: '/courses/composition/' },
-        { label: 'Ableton Live for DJs', href: '/courses/ableton-live-for-djs/' },
-        { label: 'Sound Design & Synthesis in Ableton Live', href: '/courses/sound-design/' },
-        { label: 'Rekordbox', href: '/courses/rekordbox/' },
-        { label: 'Electronic Sound Art with Arturia', href: '/courses/arturia/' },
         { label: 'Rhythm Section Programming', href: '/courses/rhythm-section-programming/' },
-        { label: 'Radio & Podcast', href: '/courses/radio-podcast/' },
+        { label: 'Vocal Production', href: '/courses/vocal-production/' },
       ],
     },
-    others: {
-      heading: 'Others & Specialties',
+    more: {
+      heading: 'More',
       items: [
-        { label: 'Private Instruction & Tuition', href: '/bespoke-private-tuition/' },
-        { label: 'Electronic Music DJ Course', href: '/courses/dj-course/' },
-        { label: 'Post Production - Mixing and Sound Design for Film and TV', href: '/courses/post-production/' },
-        { label: 'K-pop Hit Songwriting & Music Production', href: '/courses/k-pop/' },
+        { label: 'Private Tuition', href: '/bespoke-private-tuition/' },
+        { label: 'Online Community', href: 'https://garn.link/discord' },
+        { label: 'Summer Camp', href: '/courses/school-summer-camp/' },
+        { label: 'Gift Certificate', href: 'https://edu.garnishmusicproduction.com/gift/' },
+        { label: 'Live Online', href: 'https://edu.garnishmusicproduction.com/live-online/' },
       ],
     },
   };
@@ -507,17 +491,17 @@ export default function Header({ site }: HeaderProps) {
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-[70px]">
-          {/* Logo - matching the Garnish block lettering */}
+          {/* Logo - uses the real Garnish animated GIF logo from the live site */}
           <Link href="/" className="flex items-center gap-2 shrink-0" onClick={handleLinkClick}>
-            <span className="text-[22px] font-black tracking-[0.04em] text-slate-900 uppercase"
-              style={{ fontFamily: 'var(--font-space-grotesk), sans-serif' }}>
-              GAR
-              <span className="relative">
-                N
-                <span className="absolute left-[45%] top-[38%] w-[3px] h-[35%] bg-emerald-500 -translate-x-1/2" />
-              </span>
-              ISH
-            </span>
+            <Image
+              src="/media/edu-logo.gif"
+              alt="Garnish Music Production School"
+              width={120}
+              height={40}
+              className="h-[40px] w-auto object-contain"
+              priority
+              unoptimized
+            />
             {site.subdomain !== 'www' && (
               <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-slate-400 ml-1 self-end mb-[2px]">
                 {site.city}
