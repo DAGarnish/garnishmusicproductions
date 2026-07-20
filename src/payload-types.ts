@@ -177,7 +177,22 @@ export interface Page {
   title: string;
   slug: string;
   tenant:
-    'www' | 'la' | 'ny' | 'ber' | 'nsh' | 'tyo' | 'bcn' | 'sea' | 'mia' | 'hou' | 'syd' | 'lis' | 'sf' | 'sg' | 'pdx';
+    | 'www'
+    | 'la'
+    | 'ny'
+    | 'ber'
+    | 'nsh'
+    | 'tyo'
+    | 'bcn'
+    | 'sea'
+    | 'mia'
+    | 'hou'
+    | 'syd'
+    | 'lis'
+    | 'sf'
+    | 'sg'
+    | 'pdx'
+    | 'edu';
   wpPostId?: number | null;
   featuredImage?: (number | null) | Media;
   layout?:

@@ -48,6 +48,7 @@ export const Pages: CollectionConfig = {
         { label: 'San Francisco (sf)', value: 'sf' },
         { label: 'Singapore (sg)', value: 'sg' },
         { label: 'Portland (pdx)', value: 'pdx' },
+        { label: 'Global Hub (edu)', value: 'edu' },
       ],
     },
     {

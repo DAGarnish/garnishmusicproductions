@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
+// @ts-ignore - node:sqlite types might not be present in @types/node v20
 import { DatabaseSync } from 'node:sqlite';
 import pkg from 'pg';
 const { Pool } = pkg;

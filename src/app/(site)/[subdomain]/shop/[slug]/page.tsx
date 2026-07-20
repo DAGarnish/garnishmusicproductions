@@ -8,6 +8,7 @@ import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
 import { CourseImage } from '@/components/CourseImage';
 import { parseWPBakery } from '@/lib/wpbakery';
+import { buildCourseMetadata, buildCourseJsonLd, buildBreadcrumbJsonLd } from '@/lib/seo';
 
 const LEGACY_SLUG_MAP: Record<string, string> = {
   // London-specific suffixed slugs → canonical DB slugs
@@ -89,6 +90,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const targetSlug = LEGACY_SLUG_MAP[cleanSlug] || cleanSlug;
   const site = SITES[subdomain] || SITES.www;
 
+  const overrides: { title?: string; description?: string; ogImageUrl?: string; ogImageAlt?: string; updatedTime?: string } = {};
+
   if (subdomain !== 'www') {
     const wpPage = await getPageBySlug(subdomain, targetSlug);
     const wpProduct = !wpPage ? await getProductBySlug(subdomain, targetSlug) : null;
@@ -96,10 +99,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (wpItem && site) {
       const titleMatch = wpItem.content?.rendered?.match(/<h2[^>]*>(?:<strong>)?([^<]+)(?:<\/strong>)?<\/h2>/i);
       const pageTitle = titleMatch ? titleMatch[1].trim() : (wpItem.title?.rendered || 'Course');
-      return {
-        title: `${pageTitle} | Courses | ${site.name}`,
-        description: wpItem.excerpt?.rendered?.replace(/<[^>]*>/g, '').substring(0, 160) || `${pageTitle} course at Garnish ${site.city}`,
-      };
+      overrides.title = `${pageTitle} | Courses | ${site.name}`;
+      overrides.description = wpItem.excerpt?.rendered?.replace(/<[^>]*>/g, '').substring(0, 160) || `${pageTitle} course at Garnish ${site.city}`;
+      const featuredImage = getFeaturedImage(wpItem);
+      if (featuredImage) {
+        overrides.ogImageUrl = featuredImage.url;
+        overrides.ogImageAlt = featuredImage.alt;
+      }
+      return buildCourseMetadata(targetSlug, site, `/courses/${cleanSlug}`, overrides);
     }
   }
 
@@ -141,10 +148,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
     if (result.docs[0]) {
       const c = result.docs[0];
-      return {
-        title: `${c.title} | Courses | ${site.name}`,
-        description: c.shortDescription || `${c.title} course at Garnish ${site.city}`,
-      };
+      overrides.title = `${c.title} | Courses | ${site.name}`;
+      overrides.description = c.shortDescription || `${c.title} course at Garnish ${site.city}`;
+      
+      const imgObj = typeof c.featuredImage === 'object' && c.featuredImage !== null ? c.featuredImage : null;
+      let imgUrl = imgObj?.url?.startsWith('http') ? imgObj.url : null;
+      if (!imgUrl) {
+        const rawUrl = imgObj?.wpUploadPath
+          ? `/uploads/${imgObj.wpUploadPath}`
+          : (imgObj?.url || (imgObj?.filename ? `/media/${imgObj.filename}` : null));
+        imgUrl = resolveImageUrl(rawUrl);
+      }
+      if (imgUrl) {
+        overrides.ogImageUrl = imgUrl;
+        overrides.ogImageAlt = imgObj?.alt || c.title;
+      }
+      
+      return buildCourseMetadata(targetSlug, site, `/courses/${cleanSlug}`, overrides);
     }
   } catch (err) {
     console.error('Payload error in generateMetadata:', err);
@@ -156,10 +176,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (item && site) {
     const titleMatch = item.content?.rendered?.match(/<h2[^>]*>(?:<strong>)?([^<]+)(?:<\/strong>)?<\/h2>/i);
     const pageTitle = titleMatch ? titleMatch[1].trim() : (item.title?.rendered || 'Course');
-    return {
-      title: `${pageTitle} | Courses | ${site.name}`,
-      description: item.excerpt?.rendered?.replace(/<[^>]*>/g, '').substring(0, 160) || 'Learn music production.',
-    };
+    overrides.title = `${pageTitle} | Courses | ${site.name}`;
+    overrides.description = item.excerpt?.rendered?.replace(/<[^>]*>/g, '').substring(0, 160) || 'Learn music production.';
+    const featuredImage = getFeaturedImage(item);
+    if (featuredImage) {
+      overrides.ogImageUrl = featuredImage.url;
+      overrides.ogImageAlt = featuredImage.alt;
+    }
+    return buildCourseMetadata(targetSlug, site, `/courses/${cleanSlug}`, overrides);
   }
 
   if (targetSlug === 'test-product') {
@@ -168,9 +192,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  return {
-    title: 'Course Not Found',
-  };
+  return buildCourseMetadata(targetSlug, site, `/courses/${cleanSlug}`);
 }
 
 export default async function ProductDetailPage({ params }: Props) {

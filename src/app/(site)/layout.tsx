@@ -15,6 +15,10 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: 'Garnish Music Production',
   description: 'Learn professional music production, DJing, and audio engineering.',
+  icons: {
+    icon: 'https://res.cloudinary.com/s7pus8t5/image/upload/garnish-uploads/sites/8/2022/12/Fav-white-bg.png',
+    shortcut: 'https://res.cloudinary.com/s7pus8t5/image/upload/garnish-uploads/sites/8/2022/12/Fav-white-bg.png',
+  },
 };
 
 export default function SiteLayout({

@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import type { SiteConfig } from '@/lib/sites';
+import { parseWPBakery } from '@/lib/wpbakery';
 
 interface BlockProps {
   layout?: any[] | null;
@@ -65,14 +66,13 @@ export const RenderBlocks: React.FC<BlockProps> = ({ layout, site }) => {
             );
 
           case 'richText': {
-            const cleanHtml = (block.htmlContent || '')
-              .replace(/https?:\/\/[^\/]+\/wp-content\/uploads\//gi, '/uploads/')
-              .replace(/\/wp-content\/uploads\//gi, '/uploads/');
+            // Parse WPBakery shortcodes if present (migrated legacy content)
+            const cleanHtml = parseWPBakery(block.htmlContent || '', site.accentColor);
 
             return (
               <section key={key} className={`mx-auto ${block.containerWidth === 'full' ? 'w-full' : 'max-w-4xl'}`}>
                 <div 
-                  className="prose prose-slate max-w-none"
+                  className="wp-content prose prose-slate max-w-none"
                   style={{ '--accent': site.accentColor } as React.CSSProperties}
                   dangerouslySetInnerHTML={{ __html: cleanHtml }}
                 />

@@ -164,18 +164,24 @@ export default async function DynamicSubdomainPage({ params }: Props) {
             {(() => {
               const imgObj = typeof payloadPage.featuredImage === 'object' && payloadPage.featuredImage !== null ? payloadPage.featuredImage : null;
               let imgUrl = imgObj?.url?.startsWith('http') ? imgObj.url : null;
-              if (!imgUrl) {
-                const rawUrl = imgObj?.wpUploadPath
+              if (!imgUrl && imgObj) {
+                const rawUrl = imgObj.wpUploadPath
                   ? `/uploads/${imgObj.wpUploadPath}`
-                  : (imgObj?.url || (imgObj?.filename ? `/media/${imgObj.filename}` : null));
+                  : (imgObj.url || (imgObj.filename ? `/media/${imgObj.filename}` : null));
                 imgUrl = resolveImageUrl(rawUrl);
               }
-              if (!imgUrl || !imgObj) return null;
+              
+              if (!imgUrl && site.heroImage) {
+                imgUrl = site.heroImage;
+              }
+              
+              if (!imgUrl) return null;
+              
               return (
                 <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden bg-slate-100 mb-8 shadow-sm border border-slate-100">
                   <Image
                     src={imgUrl}
-                    alt={imgObj.alt || payloadPage.title}
+                    alt={imgObj?.alt || payloadPage.title || site.name}
                     fill
                     priority
                     unoptimized={imgUrl.startsWith('http')}
@@ -204,7 +210,8 @@ export default async function DynamicSubdomainPage({ params }: Props) {
 
   // 2. If found in legacy WordPress DB, render dynamic WP Page content
   if (page) {
-    const featuredImage = getFeaturedImage(page);
+    const fetchedImg = getFeaturedImage(page);
+    const featuredImage = fetchedImg || (site.heroImage ? { url: site.heroImage, alt: site.name } : null);
     const hasWPBakery = page.content.rendered.includes('[vc_');
     return (
       <main className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 bg-slate-50">
